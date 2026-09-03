@@ -1,2 +1,0 @@
-Programacion para calcular el area de un levantamiento topografico
- de baja precision usando el metodo de cuerda y cinta metrica.
