@@ -45,6 +45,34 @@
         .btn-transition {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .header-tienda {
+            text-align: center;
+            margin-bottom: 40px; /* Separación con la tarjeta */
+            padding: 20px;
+        }
+
+        .header-tienda h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem; /* Tamaño grande para el logo/título */
+            color: #5c3a41; /* Tono vino oscuro para contrastar con el rosa */
+            margin-bottom: 10px;
+            letter-spacing: 3px; /* Espaciado elegante entre letras */
+        }
+
+        .header-tienda p {
+            color: #8c6a71; /* Tono más suave para el texto */
+            font-size: 1.1rem;
+            max-width: 600px; /* Evita que el texto sea muy ancho en pantallas grandes */
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Ajuste para pantallas pequeñas (celulares) */
+        @media (max-width: 480px) {
+            .header-tienda h1 {
+                font-size: 2.2rem;
+             }
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 antialiased">
