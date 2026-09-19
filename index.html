@@ -3,11 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Sitio Web - Entrepreneur</title>
+    <title>Producto - Mi Tienda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        pastel: '#fcecf0',     /* Fondo principal */
+                        cardBG: '#ffffff',     /* Fondo de la tarjeta */
+                        primary: '#b56576',    /* Rosa oscuro / Mauve para botones y precio */
+                        primaryDark: '#964b5b',/* Hover del boton primario */
+                        textDark: '#5E2A3A',   /* Título */
+                        textLight: '#8a5d6a',  /* Texto secundario */
+                        imageBG: '#fff5f7',    /* Fondo del recuadro de imagen */
+                        imageBorder: '#f0d1d8' /* Borde del recuadro */
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #fcecf0;
+            /* Patrón de ondas muy sutil para dar textura al fondo pastel */
+            background-image: radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.4) 0, rgba(255, 255, 255, 0.4) 3px, transparent 3px), 
+                              radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.4) 0, rgba(255, 255, 255, 0.4) 3px, transparent 3px);
+            background-size: 40px 40px;
+        }
+        
+        /* Animaciones suaves */
+        .btn-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-4 antialiased">
     <h1>GOLDEN V CLOTHES</h1>
     <p>Esta es mi primera página web.</p>
-    <img src="ropa.png">
+
+    <!-- Tarjeta Principal -->
+    <div class="bg-cardBG w-full max-w-sm rounded-[32px] p-6 sm:p-8 relative z-10" 
+         style="box-shadow: 0 20px 40px -10px rgba(181, 101, 118, 0.15), 0 0 20px rgba(255, 255, 255, 0.5) inset;">
+         
+        <!-- Decoración pequeña superior (Opcional, da un toque elegante) -->
+        <div class="absolute top-4 right-6 text-primary/30">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/>
+            </svg>
+        </div>
+
+        <!-- Contenedor de la Imagen (Placeholder) -->
+        <div class="w-full aspect-[4/5] bg-imageBG rounded-2xl border-2 border-dashed border-imageBorder flex flex-col items-center justify-center text-primary/60 mb-6 group hover:border-primary/50 transition-colors duration-300 relative overflow-hidden">
+            <!-- Icono de gancho de ropa -->
+            <svg class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            <span class="font-medium tracking-wide text-sm uppercase">Imagen de tu prenda</span>
+            
+            <!-- Imagen --> 
+                 <img src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Prenda" class="w-full h-full object-cover rounded-xl" />
+        </div>
+
+        <!-- Detalles del producto -->
+        <div class="text-center px-2">
+            <h2 class="font-serif text-3xl font-bold text-textDark leading-tight mb-2">
+                Vestido Floral <br> de Verano
+            </h2>
+            <p class="font-sans text-sm text-textLight leading-relaxed mb-5">
+                Suave algodón orgánico en tono rubor. Perfecto para tardes de picnic y paseos de domingo.
+            </p>
+            
+            <div class="inline-block bg-pastel/50 px-4 py-1.5 rounded-full mb-6 border border-primary/10">
+                <span class="font-sans font-bold text-xl text-primary tracking-tight">$49.00 <span class="text-xs font-normal text-textLight ml-1">USD</span></span>
+            </div>
+        </div>
+
+        <!-- Botones de Acción Separados -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full">
+            <!-- Botón Secundario: Ver Detalles -->
+            <button class="flex-1 py-3.5 px-4 rounded-xl border border-primary/30 text-primary font-medium text-sm btn-transition hover:bg-pastel hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
+                Ver Detalles
+            </button>
+            
+            <!-- Botón Primario: Comprar -->
+            <button class="flex-1 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:shadow-[0_12px_20px_rgba(181,101,118,0.35)] hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                </svg>
+                Comprar
+            </button>
+        </div>
+
+    </div>
+
 </body>
 </html>
