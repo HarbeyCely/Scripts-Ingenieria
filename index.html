@@ -73,6 +73,14 @@
                 font-size: 2.2rem;
              }
         }
+        /* Ocultar barra de desplazamiento en el slider del modal */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none; /* IE y Edge */
+            scrollbar-width: none; /* Firefox */
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center flex-col items-center p-4 antialiased">
@@ -100,7 +108,7 @@
                 <svg class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
-                <span class="font-medium tracking-wide text-sm uppercase">No se que poner aqui</span>
+                <span class="font-medium tracking-wide text-sm uppercase">NEQUI - BRE-B - NU</span>
                 
                 <!-- Imagen --> 
                      <img src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Prenda" class="w-full h-full object-cover rounded-xl" />
@@ -123,7 +131,7 @@
             <!-- Botones de Acción Separados -->
             <div class="flex flex-col sm:flex-row gap-3 w-full">
                 <!-- Botón Secundario: Ver Detalles -->
-                <button class="flex-1 py-3.5 px-4 rounded-xl border border-primary/30 text-primary font-medium text-sm btn-transition hover:bg-pastel hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
+                <button onclick="abrirModal()" class="flex-1 py-3.5 px-4 rounded-xl border border-primary/30 text-primary font-medium text-sm btn-transition hover:bg-pastel hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
                     Ver Detalles
                 </button>
                 
@@ -155,23 +163,23 @@
                 <svg class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
-                <span class="font-medium tracking-wide text-sm uppercase">No se que poner aqui</span>
+                <span class="font-medium tracking-wide text-sm uppercase">NEQUI - BRE-B - NU</span>
                 
                 <!-- Imagen --> 
-                     <img src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Prenda" class="w-full h-full object-cover rounded-xl" />
+                     <img src="pantaloneta_verde.png" alt="Prenda" class="w-full h-full object-cover rounded-xl" />
             </div>
     
             <!-- Detalles del producto -->
             <div class="text-center px-2">
                 <h2 class="font-serif text-3xl font-bold text-textDark leading-tight mb-2">
-                    Chaqueta negra <br> Mela melita
+                    Pantaloneta Verde <br> Transpirable
                 </h2>
                 <p class="font-sans text-sm text-textLight leading-relaxed mb-5">
-                    Poliester resistente a lluvia, suave al tacto y con un estilo elegante juvenil.
+                    Tela impermeable, transpirable perfecta para hacer deporte.
                 </p>
                 
                 <div class="inline-block bg-pastel/50 px-4 py-1.5 rounded-full mb-6 border border-primary/10">
-                    <span class="font-sans font-bold text-xl text-primary tracking-tight">$120,000 <span class="text-xs font-normal text-textLight ml-1">COP</span></span>
+                    <span class="font-sans font-bold text-xl text-primary tracking-tight">$55,000 <span class="text-xs font-normal text-textLight ml-1">COP</span></span>
                 </div>
             </div>
     
@@ -193,5 +201,92 @@
     
         </div>
     </div>
+
+    <!-- ================= MODAL DE DETALLES ================= -->
+    <div id="modalDetalles" class="fixed inset-0 z-50 hidden items-center justify-center bg-textDark/40 backdrop-blur-sm p-4 transition-opacity duration-300">
+        
+        <!-- Tarjeta del Modal -->
+        <div class="bg-cardBG w-full max-w-lg rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <!-- Botón Cerrar (X) -->
+            <button onclick="cerrarModal()" class="absolute top-4 right-4 z-20 bg-white/80 backdrop-blur-md p-2 rounded-full text-textDark hover:bg-pastel hover:text-primary transition-colors focus:outline-none shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <!-- Slider de 4 Imágenes (Deslizable horizontalmente) -->
+            <div class="w-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar bg-imageBG">
+                <!-- Imagen 1 -->
+                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative">
+                    <img src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Detalle 1" class="w-full h-full object-cover">
+                </div>
+                <!-- Imagen 2 (Reemplaza el src) -->
+                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative flex items-center justify-center bg-pastel">
+                    <span class="text-primary font-medium">Imagen 2</span>
+                </div>
+                <!-- Imagen 3 (Reemplaza el src) -->
+                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative flex items-center justify-center bg-imageBG">
+                    <span class="text-primary font-medium">Imagen 3</span>
+                </div>
+                <!-- Imagen 4 (Reemplaza el src) -->
+                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative flex items-center justify-center bg-pastel">
+                    <span class="text-primary font-medium">Imagen 4</span>
+                </div>
+            </div>
+
+            <!-- Zona de Información -->
+            <div class="p-6 sm:p-8 overflow-y-auto">
+                <div class="flex justify-between items-start mb-4 gap-4">
+                    <h2 class="font-serif text-2xl font-bold text-textDark leading-tight">
+                        Chaqueta negra <br> Mela melita
+                    </h2>
+                    <span class="font-sans font-bold text-lg text-primary whitespace-nowrap">$120,000 COP</span>
+                </div>
+                
+                <h3 class="font-sans font-semibold text-textDark text-sm uppercase tracking-wider mb-2 border-b border-primary/10 pb-1">Descripción Detallada</h3>
+                <p class="font-sans text-sm text-textLight leading-relaxed mb-4">
+                    Poliester resistente a lluvia, suave al tacto y con un estilo elegante juvenil. Cuenta con forro interior térmico para mantener la temperatura ideal, bolsillos laterales con cierre invisible y ajuste elástico en la cintura para enmarcar la silueta.
+                </p>
+                
+                <ul class="text-sm text-textLight list-disc list-inside mb-6 space-y-1">
+                    <li>Material: 100% Poliéster de alta densidad.</li>
+                    <li>Forro interior suave y transpirable.</li>
+                    <li>Recomendación de cuidado: Lavar a mano, secar a la sombra.</li>
+                </ul>
+
+                <!-- Botón de compra dentro del modal -->
+                <button class="w-full py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:-translate-y-0.5">
+                    Añadir al carrito - Comprar
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+        // Funciones para abrir y cerrar la ventana flotante
+        const modal = document.getElementById('modalDetalles');
+
+        function abrirModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex'); // Usamos flex para centrar el contenido
+            // Evitar que el fondo de la página haga scroll mientras el modal está abierto
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function cerrarModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            // Restaurar el scroll de la página principal
+            document.body.style.overflow = 'auto';
+        }
+
+        // Extra: Cerrar el modal si el usuario hace clic fuera de la tarjeta blanca
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                cerrarModal();
+            }
+        });
+    </script>
 </body>
 </html>
