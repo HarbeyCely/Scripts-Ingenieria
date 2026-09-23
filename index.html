@@ -216,24 +216,38 @@
                 </svg>
             </button>
 
-            <!-- Slider de 4 Imágenes (Deslizable horizontalmente) -->
-            <div class="w-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar bg-imageBG">
-                <!-- Imagen 1 -->
-                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative">
-                    <img id="modal-img1" src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Detalle 1" class="w-full h-full object-cover">
+            <!-- Slider de 4 Imágenes (Deslizable horizontalmente) y Flechas -->
+            <div class="relative w-full bg-imageBG group">
+                <!-- Flecha Izquierda -->
+                <button onclick="moverCarrusel(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 z-30 bg-white/90 p-2.5 rounded-full shadow-lg text-primary hover:bg-primary hover:text-white transition-all focus:outline-none hidden sm:block opacity-0 group-hover:opacity-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <div id="carruselImagenes" class="w-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth">
+                    <!-- Imagen 1 -->
+                    <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative">
+                        <img id="modal-img1" src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Vista 1" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Imagen 2 -->
+                    <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative">
+                        <img id="modal-img2" src="" alt="Vista 2" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Imagen 3 -->
+                    <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative">
+                        <img id="modal-img3" src="" alt="Vista 3" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Imagen 4 -->
+                    <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative">
+                        <img id="modal-img4" src="" alt="Vista 4" class="w-full h-full object-cover">
+                    </div>
                 </div>
-                <!-- Imagen 2 (Reemplaza el src) -->
-                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative flex items-center justify-center bg-pastel">
-                    <img  src="pantaloneta_verde2.png" alt="Detalle 2" class="w-full h-full object-cover">
-                </div>
-                <!-- Imagen 3 (Reemplaza el src) -->
-                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative flex items-center justify-center bg-imageBG">
-                    <span class="text-primary font-medium">Imagen 3</span>
-                </div>
-                <!-- Imagen 4 (Reemplaza el src) -->
-                <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative flex items-center justify-center bg-pastel">
-                    <span class="text-primary font-medium">Imagen 4</span>
-                </div>
+                <!-- Flecha Derecha -->
+                <button onclick="moverCarrusel(1)" class="absolute right-3 top-1/2 -translate-y-1/2 z-30 bg-white/90 p-2.5 rounded-full shadow-lg text-primary hover:bg-primary hover:text-white transition-all focus:outline-none hidden sm:block opacity-0 group-hover:opacity-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
             </div>
 
             <!-- Zona de Información -->
@@ -271,18 +285,29 @@
                 titulo: 'Chaqueta negra <br> Mela melita',
                 precio: '$120,000 COP',
                 descripcion: 'Poliéster resistente a lluvia, suave al tacto y con un estilo elegante juvenil. Cuenta con forro interior térmico para mantener la temperatura ideal, bolsillos laterales con cierre invisible y ajuste elástico.',
-                imagen: '//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp'
+                // rutas de las 4 imagenes del carrusel producto1
+                imagenes: [
+                    '//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp',
+                    'ruta_chaqueta_2.jpg',
+                    'ruta_chaqueta_3.jpg',
+                    'ruta_chaqueta_4.jpg'
+                ]
             },
             'producto2': {
                 titulo: 'Pantaloneta Verde <br> Transpirable',
                 precio: '$55,000 COP',
                 descripcion: 'Tela impermeable, transpirable perfecta para hacer deporte. Diseño ligero y cómodo con cintura ajustable. Ideal para entrenamientos intensos o días casuales.',
-                imagen: 'pantaloneta_verde.png' // La ruta de tu segunda imagen
+                // rutas de las 4 imagenes del carrusel producto2
+                imagenes: [
+                    'pantaloneta_verde.png',
+                    'pantaloneta_verde2.png',
+                    'pantaloneta_verde3.png',
+                    'pantaloneta_verde4.png'
+                ]
             }
         };
 
         const modal = document.getElementById('modalDetalles');
-
         // 2. Modificamos la función para recibir el ID del producto
         function abrirModal(idProducto) {
             // Obtenemos los datos del producto elegido
@@ -292,8 +317,15 @@
             document.getElementById('modal-titulo').innerHTML = productoElegido.titulo;
             document.getElementById('modal-precio').innerText = productoElegido.precio;
             document.getElementById('modal-desc').innerText = productoElegido.descripcion;
-            document.getElementById('modal-img1').src = productoElegido.imagen;
-
+            // Apartado de las 4 imagenes
+            document.getElementById('modal-img1').src = productoElegido.imagenes[0];
+            document.getElementById('modal-img2').src = productoElegido.imagenes[1];
+            document.getElementById('modal-img3').src = productoElegido.imagenes[2];
+            document.getElementById('modal-img4').src = productoElegido.imagenes[3];
+            
+            // Resetear el scroll del carrusel a la primera imagen al abrir
+            carrusel.scrollLeft = 0;
+            
             // Mostramos el modal
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -305,7 +337,21 @@
             modal.classList.remove('flex');
             document.body.style.overflow = 'auto';
         }
-
+        
+        // Función para las flechas laterales
+        function moverCarrusel(direccion) {
+            const anchoImagen = carrusel.clientWidth;
+            carrusel.scrollBy({ left: anchoImagen * direccion, behavior: 'smooth' });
+        }
+        
+        // Evento para mover el carrusel con la rueda del ratón en PC
+        carrusel.addEventListener('wheel', function(evento) {
+            evento.preventDefault(); // Evita que la página intente bajar
+            const direccion = evento.deltaY > 0 ? 1 : -1;
+            moverCarrusel(direccion);
+        });
+        
+        // cerrar al clicar por fuera de la ventana flotante
         modal.addEventListener('click', function(event) {
             if (event.target === modal) {
                 cerrarModal();
