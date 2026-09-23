@@ -132,7 +132,7 @@
             <!-- Botones de Acción Separados -->
             <div class="flex flex-col sm:flex-row gap-3 w-full">
                 <!-- Botón Secundario: Ver Detalles -->
-                <button onclick="abrirModal()" class="flex-1 py-3.5 px-4 rounded-xl border border-primary/30 text-primary font-medium text-sm btn-transition hover:bg-pastel hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
+                <button onclick="abrirModal('producto1')" class="flex-1 py-3.5 px-4 rounded-xl border border-primary/30 text-primary font-medium text-sm btn-transition hover:bg-pastel hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
                     Ver Detalles
                 </button>
                 
@@ -187,7 +187,7 @@
             <!-- Botones de Acción Separados -->
             <div class="flex flex-col sm:flex-row gap-3 w-full">
                 <!-- Botón Secundario: Ver Detalles -->
-                <button onclick="abrirModal()" class="flex-1 py-3.5 px-4 rounded-xl border border-primary/30 text-primary font-medium text-sm btn-transition hover:bg-pastel hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
+                <button onclick="abrirModal('producto2')" class="flex-1 py-3.5 px-4 rounded-xl border border-primary/30 text-primary font-medium text-sm btn-transition hover:bg-pastel hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20">
                     Ver Detalles
                 </button>
                 
@@ -220,7 +220,7 @@
             <div class="w-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar bg-imageBG">
                 <!-- Imagen 1 -->
                 <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative">
-                    <img src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Detalle 1" class="w-full h-full object-cover">
+                    <img id="modal-img1" src="//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp" alt="Detalle 1" class="w-full h-full object-cover">
                 </div>
                 <!-- Imagen 2 (Reemplaza el src) -->
                 <div class="min-w-full snap-center aspect-square sm:aspect-[4/3] relative flex items-center justify-center bg-pastel">
@@ -239,14 +239,14 @@
             <!-- Zona de Información -->
             <div class="p-6 sm:p-8 overflow-y-auto">
                 <div class="flex justify-between items-start mb-4 gap-4">
-                    <h2 class="font-serif text-2xl font-bold text-textDark leading-tight">
+                    <h2 id="modal-titulo" class="font-serif text-2xl font-bold text-textDark leading-tight">
                         Chaqueta negra <br> Mela melita
                     </h2>
-                    <span class="font-sans font-bold text-lg text-primary whitespace-nowrap">$120,000 COP</span>
+                    <span id="modal-precio" class="font-sans font-bold text-lg text-primary whitespace-nowrap">$120,000 COP</span>
                 </div>
                 
                 <h3 class="font-sans font-semibold text-textDark text-sm uppercase tracking-wider mb-2 border-b border-primary/10 pb-1">Descripción Detallada</h3>
-                <p class="font-sans text-sm text-textLight leading-relaxed mb-4">
+                <p id="modal-desc" class="font-sans text-sm text-textLight leading-relaxed mb-4">
                     Poliester resistente a lluvia, suave al tacto y con un estilo elegante juvenil. Cuenta con forro interior térmico para mantener la temperatura ideal, bolsillos laterales con cierre invisible y ajuste elástico en la cintura para enmarcar la silueta.
                 </p>
                 
@@ -265,24 +265,47 @@
     </div>
     <!-- ================= SCRIPTS ================= -->
     <script>
-        // Funciones para abrir y cerrar la ventana flotante
+        // 1. Nuestra base de datos de productos
+        const baseDeDatos = {
+            'producto1': {
+                titulo: 'Chaqueta negra <br> Mela melita',
+                precio: '$120,000 COP',
+                descripcion: 'Poliéster resistente a lluvia, suave al tacto y con un estilo elegante juvenil. Cuenta con forro interior térmico para mantener la temperatura ideal, bolsillos laterales con cierre invisible y ajuste elástico.',
+                imagen: '//img.ltwebstatic.com/v4/j/spmp/2026/06/23/23/17822001322cdf618f907eb0f12d19cdc72f6f16cf_thumbnail_900x.webp'
+            },
+            'producto2': {
+                titulo: 'Pantaloneta Verde <br> Transpirable',
+                precio: '$55,000 COP',
+                descripcion: 'Tela impermeable, transpirable perfecta para hacer deporte. Diseño ligero y cómodo con cintura ajustable. Ideal para entrenamientos intensos o días casuales.',
+                imagen: 'pantaloneta_verde.png' // La ruta de tu segunda imagen
+            }
+        };
+
         const modal = document.getElementById('modalDetalles');
 
-        function abrirModal() {
+        // 2. Modificamos la función para recibir el ID del producto
+        function abrirModal(idProducto) {
+            // Obtenemos los datos del producto elegido
+            const productoElegido = baseDeDatos[idProducto];
+
+            // Reemplazamos los datos en la ventana flotante
+            document.getElementById('modal-titulo').innerHTML = productoElegido.titulo;
+            document.getElementById('modal-precio').innerText = productoElegido.precio;
+            document.getElementById('modal-desc').innerText = productoElegido.descripcion;
+            document.getElementById('modal-img1').src = productoElegido.imagen;
+
+            // Mostramos el modal
             modal.classList.remove('hidden');
-            modal.classList.add('flex'); // Usamos flex para centrar el contenido
-            // Evitar que el fondo de la página haga scroll mientras el modal está abierto
+            modal.classList.add('flex');
             document.body.style.overflow = 'hidden'; 
         }
 
         function cerrarModal() {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            // Restaurar el scroll de la página principal
             document.body.style.overflow = 'auto';
         }
 
-        // Extra: Cerrar el modal si el usuario hace clic fuera de la tarjeta blanca
         modal.addEventListener('click', function(event) {
             if (event.target === modal) {
                 cerrarModal();
