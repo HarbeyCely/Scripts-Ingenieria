@@ -326,14 +326,14 @@
                 <!-- Contenedor flex para poner los botones uno al lado del otro -->
                 <div class="flex gap-3 w-full">
                     <!-- Botón de compra dentro del modal -->
-                    <button class="flex-1 flex items-center justify-center py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:-translate-y-0.5">
+                    <button onclick="abrirCompra()" class="flex-1 flex items-center justify-center py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:-translate-y-0.5">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg>
                         Comprar
                     </button>
                     <!-- Botón de carrito dentro del modal -->
-                    <button class="flex-1 flex items-center justify-center py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:-translate-y-0.5">
+                    <button onclick="abrirCompra()" class="flex-1 flex items-center justify-center py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:-translate-y-0.5">
                         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
@@ -371,7 +371,7 @@
                     <p class="font-sans text-sm text-textLight mb-1"><strong>Nequi / Daviplata:</strong> 3156186024</p>
                     <p class="font-sans text-sm text-textLight mb-3"><strong>Llave Bre-B:</strong> @HEC190</p>
                     <h3 class="font-sans font-semibold text-textDark text-sm uppercase tracking-wider mb-2 mt-4">Envíos</h3>
-                    <p class="font-sans text-sm text-textLight">Bucaramanga y AM: $8.000 COP <br> Floridablanca: $13.000 COP <br> Piedecuesta: $19.000 </p>
+                    <p class="font-sans text-sm text-textLight">Bucaramanga: $8.000 COP <br> Floridablanca: $13.000 COP <br> Piedecuesta: $19.000 COP </p>
                 </div>
 
                 <!-- Formulario -->
@@ -614,9 +614,9 @@
         // 1. Detectar el botón "Atrás" del celular (o retroceso del navegador)
         window.addEventListener('popstate', function(event) {
             // Si el modal está abierto, lo cerramos en lugar de salir de la página
-            if (!modal.classList.contains('hidden')) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
+            if (!modalCompra.classList.contains('hidden')) {
+                modalCompra.classList.add('hidden');
+                modalCompra.classList.remove('flex');
                 document.body.style.overflow = 'auto';
             } else if (!modal.classList.contains('hidden')) {
                 modal.classList.add('hidden');
