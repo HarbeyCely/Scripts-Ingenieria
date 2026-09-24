@@ -137,7 +137,7 @@
                 </button>
                 
                 <!-- Botón Primario: Comprar -->
-                <button class="flex-1 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:shadow-[0_12px_20px_rgba(181,101,118,0.35)] hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                <button onclick="abrirCompra('producto1')" class="flex-1 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:shadow-[0_12px_20px_rgba(181,101,118,0.35)] hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
@@ -192,7 +192,7 @@
                 </button>
                 
                 <!-- Botón Primario: Comprar -->
-                <button class="flex-1 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:shadow-[0_12px_20px_rgba(181,101,118,0.35)] hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                <button onclick="abrirCompra('producto2')" class="flex-1 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:shadow-[0_12px_20px_rgba(181,101,118,0.35)] hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
@@ -246,7 +246,7 @@
                 </button>
                 
                 <!-- Botón Primario: Comprar -->
-                <button class="flex-1 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:shadow-[0_12px_20px_rgba(181,101,118,0.35)] hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                <button onclick="abrirCompra('producto3')" class="flex-1 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:shadow-[0_12px_20px_rgba(181,101,118,0.35)] hover:-translate-y-0.5 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
@@ -445,6 +445,7 @@
 
         const modal = document.getElementById('modalDetalles');
         const carrusel = document.getElementById('carruselImagenes');
+        const modalCompra = document.getElementById('modalCompra');
         
         // --- LÓGICA DE TALLAS ---
         let productoActualId = null; 
@@ -492,6 +493,43 @@
             renderizarTallas(); // Vuelve a dibujar los botones para actualizar los colores
         }
         // --- FIN LÓGICA DE TALLAS ---
+
+        // --- LÓGICA DEL MODAL DE COMPRA ---
+        function abrirCompra(idProductoNuevo = null) {
+            // Si le pasamos un producto, lo actualizamos. Si no, usamos el productoActualId (útil si venimos de la ventana detalles)
+            const idParaComprar = idProductoNuevo || productoActualId;
+            const productoElegido = baseDeDatos[idParaComprar];
+            
+            // Si el modal de detalles estaba abierto, lo cerramos sutilmente
+            if (!modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+
+            // Actualizamos el nombre en el resumen de compra (quitando el <br>)
+            document.getElementById('compra-producto-nombre').innerText = productoElegido.titulo.replace('<br>', ' ') + " - Talla: " + tallaSeleccionada;
+
+            modalCompra.classList.remove('hidden');
+            modalCompra.classList.add('flex');
+            document.body.style.overflow = 'hidden'; 
+            history.pushState({ modalCompraAbierto: true }, "");
+        }
+
+        function cerrarCompra() {
+            modalCompra.classList.add('hidden');
+            modalCompra.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+            if (history.state && history.state.modalCompraAbierto) {
+                history.back();
+            }
+        }
+
+        modalCompra.addEventListener('click', function(event) {
+            if (event.target === modalCompra) {
+                cerrarCompra();
+            }
+        });
+        // --- FIN LOGICA DEL MODAL DE COMPRA ---
         
         // 2. Modificamos la función para recibir el ID del producto
         function abrirModal(idProducto) {
@@ -580,13 +618,18 @@
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
                 document.body.style.overflow = 'auto';
+            } else if (!modal.classList.contains('hidden')) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
             }
         });
 
         // 2. Detectar la tecla Escape en PC
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
-                cerrarModal(); // Ejecuta la función de cerrar si tocas Escape
+            if (event.key === 'Escape') {
+                if (!modalCompra.classList.contains('hidden')) cerrarCompra();
+                else if (!modal.classList.contains('hidden')) cerrarModal();
             }
         });
     </script>
