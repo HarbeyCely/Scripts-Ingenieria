@@ -258,6 +258,14 @@
                     </h2>
                     <span id="modal-precio" class="font-sans font-bold text-lg text-primary whitespace-nowrap">$120,000 COP</span>
                 </div>
+                <!-- ================= TALLAS ================= -->
+                <div class="mb-5">
+                    <h3 class="font-sans font-semibold text-textDark text-sm uppercase tracking-wider mb-3">
+                        Talla: <span id="texto-talla" class="text-primary font-bold">M</span>
+                    </h3>
+                    <div id="contenedor-tallas" class="flex flex-wrap gap-3">
+                    </div>
+                </div>
                 
                 <h3 class="font-sans font-semibold text-textDark text-sm uppercase tracking-wider mb-2 border-b border-primary/10 pb-1">Descripción Detallada</h3>
                 <p id="modal-desc" class="font-sans text-sm text-textLight leading-relaxed mb-4">
@@ -291,7 +299,8 @@
                     'ruta_chaqueta_2.jpg',
                     'ruta_chaqueta_3.jpg',
                     'ruta_chaqueta_4.jpg'
-                ]
+                ],
+                tallas: { 'XS': false, 'S': true, 'M': true, 'L': true, 'XL': false }
             },
             'producto2': {
                 titulo: 'Pantaloneta Verde <br> Transpirable',
@@ -303,14 +312,66 @@
                     'pantaloneta_verde2.png',
                     'pantaloneta_verde3.png',
                     'pantaloneta_verde4.png'
-                ]
+                ],
+                tallas: { 'XS': true, 'S': true, 'M': false, 'L': true, 'XL': true }
             }
         };
 
         const modal = document.getElementById('modalDetalles');
         const carrusel = document.getElementById('carruselImagenes');
+        
+        // --- LÓGICA DE TALLAS ---
+        let productoActualId = null; 
+        let tallaSeleccionada = 'M'; // Talla por defecto (fácil de cambiar)
+        const ordenTallas = ['XS', 'S', 'M', 'L', 'XL'];
+
+        function renderizarTallas() {
+            const producto = baseDeDatos[productoActualId];
+            const contenedor = document.getElementById('contenedor-tallas');
+            const textoTalla = document.getElementById('texto-talla');
+            let html = '';
+
+            // Si la talla por defecto no está disponible, selecciona la primera que sí lo esté
+            if (!producto.tallas[tallaSeleccionada]) {
+                tallaSeleccionada = ordenTallas.find(t => producto.tallas[t]) || '';
+            }
+
+            textoTalla.innerText = tallaSeleccionada; // Actualiza el texto (Ej: "Talla: S")
+
+            ordenTallas.forEach(talla => {
+                const disponible = producto.tallas[talla];
+                
+                if (disponible) {
+                    const isSelected = (talla === tallaSeleccionada);
+                    // Colores si está seleccionada vs si no lo está
+                    const clasesActivo = isSelected 
+                        ? 'bg-primary text-white border-primary shadow-md scale-110' 
+                        : 'bg-white text-textDark border-primary/30 hover:border-primary hover:text-primary hover:bg-pastel';
+
+                    html += `<button onclick="seleccionarTalla('${talla}')" class="w-10 h-10 rounded-full border ${clasesActivo} font-sans font-medium text-sm transition-all duration-200 focus:outline-none flex items-center justify-center">${talla}</button>`;
+                } else {
+                    // Botón opaco/deshabilitado si no hay stock
+                    html += `<button disabled class="w-10 h-10 rounded-full border border-gray-200 bg-gray-50 text-gray-400 font-sans font-medium text-sm cursor-not-allowed opacity-50 flex items-center justify-center relative overflow-hidden">
+                                ${talla}
+                                <div class="absolute inset-0 w-full h-[1px] bg-gray-300 top-1/2 -rotate-45"></div> <!-- Línea tachada diagonal -->
+                             </button>`;
+                }
+            });
+
+            contenedor.innerHTML = html;
+        }
+
+        function seleccionarTalla(nuevaTalla) {
+            tallaSeleccionada = nuevaTalla;
+            renderizarTallas(); // Vuelve a dibujar los botones para actualizar los colores
+        }
+        // --- FIN LÓGICA DE TALLAS ---
+        
         // 2. Modificamos la función para recibir el ID del producto
         function abrirModal(idProducto) {
+            // Guardamos qué producto abrimos y reseteamos a la talla por defecto
+            productoActualId = idProducto;
+            tallaSeleccionada = 'M';
             // Obtenemos los datos del producto elegido
             const productoElegido = baseDeDatos[idProducto];
 
@@ -323,6 +384,9 @@
             document.getElementById('modal-img2').src = productoElegido.imagenes[1];
             document.getElementById('modal-img3').src = productoElegido.imagenes[2];
             document.getElementById('modal-img4').src = productoElegido.imagenes[3];
+
+            // Llamo función para pintar los botones de tallas
+            renderizarTallas();
             
             // Resetear el scroll del carrusel a la primera imagen al abrir
             carrusel.scrollLeft = 0;
