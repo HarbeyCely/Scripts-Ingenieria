@@ -640,67 +640,66 @@
             }
         });
     
-        // --- ENVÍO DE FORMULARIO A GOOGLE SHEETS (Versión Definitiva) ---
-        document.getElementById('formulario-compra').addEventListener('submit', function(e) {
+        // --- ENVÍO DE FORMULARIO A GOOGLE SHEETS (Mejorado) ---
+        document.getElementById('formulario-compra').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const btnSubmit = this.querySelector('button[type="submit"]');
             const textoOriginal = btnSubmit.innerText;
-            btnSubmit.innerText = "Enviando pedido y comprobante...";
+            btnSubmit.innerText = "Enviando pedido, por favor espera...";
             btnSubmit.disabled = true;
 
-            // ⚠ PEGA AQUÍ TU URL DE APPS SCRIPT
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbwTf1DwoggzTXELQWCSKkuEq4PudwSy292_AtJpvKso_FrRylL0jQNXDu4OOSWMenba/exec'; 
+            // ⚠️️ PEGA AQUÍ TU URL DE APPS SCRIPT
+            const scriptURL = 'TU_URL_AQUI'; 
 
-            const nombre = document.getElementById('form-nombre').value;
-            const direccion = document.getElementById('form-direccion').value;
-            const cantidad = document.getElementById('form-cantidad').value;
-            const fileInput = document.getElementById('form-comprobante');
+            try {
+                // Crear el formulario estándar de envío (mucho más rápido que Base64)
+                const formData = new FormData();
+                formData.append('nombre', document.getElementById('form-nombre').value);
+                formData.append('direccion', document.getElementById('form-direccion').value);
+                
+                const productoElegido = baseDeDatos[productoActualId];
+                formData.append('producto', productoElegido.titulo.replace('<br>', ' '));
+                formData.append('talla', tallaSeleccionada);
+                formData.append('cantidad', document.getElementById('form-cantidad').value);
+                formData.append('precio', productoElegido.precio);
+                
+                // Adjuntar la imagen tal cual
+                const fileInput = document.getElementById('form-comprobante');
+                if (fileInput.files.length > 0) {
+                    formData.append('archivo', fileInput.files[0]);
+                }
 
-            const productoElegido = baseDeDatos[productoActualId];
-            const tituloLimpio = productoElegido.titulo.replace('<br>', ' ');
-            const precioTexto = productoElegido.precio;
-            
-            const file = fileInput.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function() {
-                    // Extraemos solo el texto en Base64 de la imagen
-                    const base64String = reader.result.split(',')[1];
-                    
-                    // Empaquetamos sin usar URLSearchParams para evitar que el navegador se congele
-                    const formData = new FormData();
-                    formData.append('nombre', nombre);
-                    formData.append('direccion', direccion);
-                    formData.append('producto', tituloLimpio);
-                    formData.append('talla', tallaSeleccionada);
-                    formData.append('cantidad', cantidad);
-                    formData.append('precio', precioTexto);
-                    formData.append('archivo', base64String);
-                    formData.append('mimeType', file.type);
-                    formData.append('fileName', file.name);
-
-                    // mode: 'no-cors' hace que el envío sea inmediato y no tire errores en consola
-                    fetch(scriptURL, {
-                        method: 'POST',
-                        body: formData,
-                        mode: 'no-cors'
-                    }).then(() => {
-                        alert("¡Pedido enviado con éxito! Revisaremos tu comprobante y te contactaremos.");
+                // Enviar datos
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const textResult = await response.text(); // Leemos como texto por seguridad
+                
+                try {
+                    const jsonResult = JSON.parse(textResult);
+                    if(jsonResult.result === "success") {
+                        alert("¡Pedido enviado con éxito! Te contactaremos pronto.");
                         cerrarCompra();
                         document.getElementById('formulario-compra').reset();
-                    }).catch(error => {
-                        alert("Hubo un problema de conexión. Intenta nuevamente.");
-                        console.error(error);
-                    }).finally(() => {
-                        btnSubmit.innerText = textoOriginal;
-                        btnSubmit.disabled = false;
-                    });
-                };
-                
-                // Iniciamos la lectura de la imagen
-                reader.readAsDataURL(file);
+                    } else {
+                        alert("Hubo un error en Google: " + jsonResult.error);
+                    }
+                } catch(parseError) {
+                    console.error("Respuesta no es JSON:", textResult);
+                    alert("Error. Google está bloqueando el acceso. Verifica que la Web App esté en 'Cualquier persona'.");
+                }
+
+            } catch (error) {
+                // Si el navegador bloquea la respuesta por CORS (suele pasar con Google), 
+                // los datos CASI SIEMPRE se guardan en el Excel de todas formas.
+                console.error("Error Fetch:", error);
+                alert("Verifica tu hoja de Sheets. Si no llegó, intenta con una imagen más ligera o revisa la consola (F12).");
+            } finally {
+                btnSubmit.innerText = textoOriginal;
+                btnSubmit.disabled = false;
             }
         });
     </script>
