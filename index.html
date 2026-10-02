@@ -382,31 +382,38 @@
                 </div>
 
                 <!-- Formulario -->
-                <form id="formulario-compra" class="space-y-4">
+                <form id="formulario-compra" action="https://script.google.com/macros/s/AKfycbwTf1DwoggzTXELQWCSKkuEq4PudwSy292_AtJpvKso_FrRylL0jQNXDu4OOSWMenba/exec" method="POST" target="hidden_iframe" enctype="multipart/form-data" class="space-y-4">
+                    <!-- Campos Ocultos para que se envíen automáticamente -->
+                    <input type="hidden" name="producto" id="form-producto">
+                    <input type="hidden" name="precio" id="form-precio">
+                    <input type="hidden" name="talla" id="form-talla">
                     <div>
                         <label class="block font-sans text-sm font-medium text-textDark mb-1">Nombre Completo *</label>
-                        <input type="text" id="form-nombre" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Juan Pérez">
+                        <input type="text" name="nombre" id="form-nombre" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Juan Pérez">
                     </div>
                     <div>
                         <label class="block font-sans text-sm font-medium text-textDark mb-1">Dirección y Ciudad *</label>
-                        <input type="text" id="form-direccion" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Calle 123 #45-67, Bucaramanga">
+                        <input type="text" name="direccion" id="form-direccion" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Calle 123 #45-67, Bucaramanga">
                     </div>
                     <div class="flex gap-4">
                         <div class="flex-1">
                             <label class="block font-sans text-sm font-medium text-textDark mb-1">Cantidad de Prendas*</label>
-                            <input type="number" id="form-cantidad" min="1" value="1" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans">
+                            <input type="number" name="cantidad" id="form-cantidad" min="1" value="1" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans">
                         </div>
                     </div>
                     <div>
                         <label class="block font-sans text-sm font-medium text-textDark mb-1">Comprobante de Pago *</label>
                         <!-- Input de archivo estilizado -->
-                        <input type="file" id="form-comprobante" required accept="image/*" class="w-full text-sm text-textLight file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-pastel file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer">
+                        <input type="file" name="comprobante" id="form-comprobante" required accept="image/*" class="w-full text-sm text-textLight file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-pastel file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer">
                     </div>
                     
                     <button type="submit" class="w-full mt-6 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:-translate-y-0.5">
                         Confirmar y Enviar Pedido
                     </button>
                 </form>
+
+                <!-- Iframe que evita que la página recargue o se congele -->
+                <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { finalizarCompra(); }"></iframe>
             </div>
         </div>
     </div>
@@ -640,69 +647,42 @@
             }
         });
     
-        // --- ENVÍO DE FORMULARIO A GOOGLE SHEETS (Versión Definitiva) ---
-        document.getElementById('formulario-compra').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // --- ENVÍO DE FORMULARIO A GOOGLE SHEETS (Método Iframe) ---
+        let submitted = false;
 
-            const btnSubmit = this.querySelector('button[type="submit"]');
-            const textoOriginal = btnSubmit.innerText;
-            btnSubmit.innerText = "Enviando pedido y comprobante...";
+        document.getElementById('formulario-compra').addEventListener('submit', function(e) {
+            // Llenamos los campos ocultos justo antes de que el navegador envíe el formulario
+            const productoElegido = baseDeDatos[productoActualId];
+            document.getElementById('form-producto').value = productoElegido.titulo.replace('<br>', ' ');
+            document.getElementById('form-precio').value = productoElegido.precio;
+            document.getElementById('form-talla').value = tallaSeleccionada;
+
+            // Cambiamos el estado del botón
+            const btnSubmit = document.getElementById('btn-submit-compra');
+            btnSubmit.innerText = "Subiendo imagen y enviando pedido...";
             btnSubmit.disabled = true;
 
-            // ⚠ PEGA AQUÍ TU URL DE APPS SCRIPT
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbwTf1DwoggzTXELQWCSKkuEq4PudwSy292_AtJpvKso_FrRylL0jQNXDu4OOSWMenba/exec'; 
-
-            const nombre = document.getElementById('form-nombre').value;
-            const direccion = document.getElementById('form-direccion').value;
-            const cantidad = document.getElementById('form-cantidad').value;
-            const fileInput = document.getElementById('form-comprobante');
-
-            const productoElegido = baseDeDatos[productoActualId];
-            const tituloLimpio = productoElegido.titulo.replace('<br>', ' ');
-            const precioTexto = productoElegido.precio;
-            
-            const file = fileInput.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function() {
-                    // Extraemos solo el texto en Base64 de la imagen
-                    const base64String = reader.result.split(',')[1];
-                    
-                    // Empaquetamos sin usar URLSearchParams para evitar que el navegador se congele
-                    const formData = new FormData();
-                    formData.append('nombre', nombre);
-                    formData.append('direccion', direccion);
-                    formData.append('producto', tituloLimpio);
-                    formData.append('talla', tallaSeleccionada);
-                    formData.append('cantidad', cantidad);
-                    formData.append('precio', precioTexto);
-                    formData.append('archivo', base64String);
-                    formData.append('mimeType', file.type);
-                    formData.append('fileName', file.name);
-
-                    // mode: 'no-cors' hace que el envío sea inmediato y no tire errores en consola
-                    fetch(scriptURL, {
-                        method: 'POST',
-                        body: formData,
-                        mode: 'no-cors'
-                    }).then(() => {
-                        alert("¡Pedido enviado con éxito! Revisaremos tu comprobante y te contactaremos.");
-                        cerrarCompra();
-                        document.getElementById('formulario-compra').reset();
-                    }).catch(error => {
-                        alert("Hubo un problema de conexión. Intenta nuevamente.");
-                        console.error(error);
-                    }).finally(() => {
-                        btnSubmit.innerText = textoOriginal;
-                        btnSubmit.disabled = false;
-                    });
-                };
-                
-                // Iniciamos la lectura de la imagen
-                reader.readAsDataURL(file);
-            }
+            // Le avisamos al iframe que el formulario fue enviado
+            submitted = true;
         });
+
+        // Esta función se dispara automáticamente cuando Google Sheets nos responde (gracias al onload del iframe)
+        function finalizarCompra() {
+            if (submitted) {
+                alert("¡Pedido enviado con éxito! Revisaremos tu comprobante y te contactaremos.");
+                
+                // Limpiamos todo
+                cerrarCompra();
+                document.getElementById('formulario-compra').reset();
+                
+                // Restauramos el botón
+                const btnSubmit = document.getElementById('btn-submit-compra');
+                btnSubmit.innerText = "Confirmar y Enviar Pedido";
+                btnSubmit.disabled = false;
+                
+                submitted = false;
+            }
+        }
     </script>
 </body>
 </html>
