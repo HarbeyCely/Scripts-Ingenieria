@@ -385,22 +385,22 @@
                 <form id="formulario-compra" class="space-y-4">
                     <div>
                         <label class="block font-sans text-sm font-medium text-textDark mb-1">Nombre Completo *</label>
-                        <input type="text" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Juan Pérez">
+                        <input type="text" id="form-nombre" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Juan Pérez">
                     </div>
                     <div>
                         <label class="block font-sans text-sm font-medium text-textDark mb-1">Dirección y Ciudad *</label>
-                        <input type="text" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Calle 123 #45-67, Bucaramanga">
+                        <input type="text" id="form-direccion" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans" placeholder="Ej: Calle 123 #45-67, Bucaramanga">
                     </div>
                     <div class="flex gap-4">
                         <div class="flex-1">
                             <label class="block font-sans text-sm font-medium text-textDark mb-1">Cantidad de Prendas*</label>
-                            <input type="number" min="1" value="1" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans">
+                            <input type="number" id="form-cantidad" min="1" value="1" required class="w-full px-4 py-2 rounded-xl border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm font-sans">
                         </div>
                     </div>
                     <div>
                         <label class="block font-sans text-sm font-medium text-textDark mb-1">Comprobante de Pago *</label>
                         <!-- Input de archivo estilizado -->
-                        <input type="file" required accept="image/*" class="w-full text-sm text-textLight file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-pastel file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer">
+                        <input type="file" id="form-comprobante" required accept="image/*" class="w-full text-sm text-textLight file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-medium file:bg-pastel file:text-primary hover:file:bg-primary/20 transition-all cursor-pointer">
                     </div>
                     
                     <button type="submit" class="w-full mt-6 py-3.5 px-4 rounded-xl bg-primary text-white font-medium text-sm shadow-[0_8px_16px_rgba(181,101,118,0.25)] btn-transition hover:bg-primaryDark hover:-translate-y-0.5">
@@ -637,6 +637,79 @@
             if (event.key === 'Escape') {
                 if (!modalCompra.classList.contains('hidden')) cerrarCompra();
                 else if (!modal.classList.contains('hidden')) cerrarModal();
+            }
+        });
+    
+        // --- ENVÍO DE FORMULARIO A GOOGLE SHEETS ---
+        document.getElementById('formulario-compra').addEventListener('submit', function(e) {
+            e.preventDefault(); // Evita que la página recargue
+
+            const btnSubmit = this.querySelector('button[type="submit"]');
+            const textoOriginal = btnSubmit.innerText;
+            btnSubmit.innerText = "Enviando pedido, por favor espera...";
+            btnSubmit.disabled = true;
+
+            // Extraer datos
+            const nombre = document.getElementById('form-nombre').value;
+            const direccion = document.getElementById('form-direccion').value;
+            const cantidad = document.getElementById('form-cantidad').value;
+            const fileInput = document.getElementById('form-comprobante');
+
+            // Datos del producto actual
+            const productoElegido = baseDeDatos[productoActualId];
+            const tituloLimpio = productoElegido.titulo.replace('<br>', ' '); // Quitamos el salto de linea
+            const precioTexto = productoElegido.precio;
+            
+            // Archivo de imagen
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function() {
+                // Convertir imagen a Base64
+                const base64String = reader.result.split(',')[1];
+                
+                // URL de la Aplicación Web de Google
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbwTf1DwoggzTXELQWCSKkuEq4PudwSy292_AtJpvKso_FrRylL0jQNXDu4OOSWMenba/exec';
+
+                // Empaquetar todo
+                const formData = new URLSearchParams();
+                formData.append('nombre', nombre);
+                formData.append('direccion', direccion);
+                formData.append('producto', tituloLimpio);
+                formData.append('talla', tallaSeleccionada);
+                formData.append('cantidad', cantidad);
+                formData.append('precio', precioTexto);
+                formData.append('archivo', base64String);
+                formData.append('mimeType', file.type);
+                formData.append('fileName', file.name);
+
+                try {
+                    const response = await fetch(scriptURL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if(result.result === "success") {
+                        alert("¡Pedido enviado con éxito! Te contactaremos pronto.");
+                        cerrarCompra(); // Cierra el modal
+                        document.getElementById('formulario-compra').reset(); // Limpia el formulario
+                    } else {
+                        alert("Hubo un error guardando el pedido: " + result.error);
+                    }
+                } catch (error) {
+                    alert("Error de conexión. Revisa tu internet e intenta de nuevo.");
+                    console.error("Error:", error);
+                } finally {
+                    btnSubmit.innerText = textoOriginal;
+                    btnSubmit.disabled = false;
+                }
+            };
+
+            // Ejecutar la lectura del archivo
+            if(file) {
+                reader.readAsDataURL(file);
             }
         });
     </script>
