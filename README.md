@@ -14,7 +14,7 @@ Dado que las herramientas más complejas requieren su propio sistema de actualiz
 
 - **Tecnologías:** Python, Revit API, pyRevit, JSON.
 - **Descripción:** Plugin que lee informes HTML nativos de Revit y despliega una ventana de revisión no modal. Aisla elementos, verifica geométricamente las intersecciones en tiempo real (`ElementIntersectsElementFilter`) y gestiona el estado de auditoría sin interrumpir el modelado.
-- **Repositorio dedicado:** [🔗 Ver código fuente y Releases del Gestor de Colisiones](URL_DE_TU_REPOSITORIO_DEL_GESTOR)
+- **Repositorio dedicado:** [🔗 Ver código fuente y Releases del Gestor de Colisiones]([URL_DE_TU_REPOSITORIO_DEL_GESTOR](https://github.com/HarbeyCely/pyRevit-GestorColisiones))
 
 ---
 
